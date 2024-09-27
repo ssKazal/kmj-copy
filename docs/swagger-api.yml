@@ -1,0 +1,2525 @@
+swagger: '2.0'
+info:
+  description: "`CLIENTAPIKEY` is required in the header for all the requests. Collect `CLIENTAPIKEY` from admin"
+  version: 1.0.0
+  title: Kilimanjaro
+
+paths:
+  /user/registration/:
+    post:
+      tags:
+      - User Registrations
+      operationId: userRegistration
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        description: "Between 'email' and 'phone number' one field is required"
+        schema:
+          $ref: '#/definitions/Registration'
+      responses:
+        201:
+          description: Success
+          schema:
+            $ref: '#/definitions/userRegistrationResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/userRegistrationErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+  /api/login/:
+    post:
+      tags:
+      - Authentication
+      operationId: signin
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        description: "'email' can be 'email address/phone number'"
+        schema:
+          $ref: '#/definitions/apiToken'
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/loginResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/loginErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/loginErrorResponseForWrongCredentials'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+  /api/token/refresh_token/:
+    post:
+      tags:
+      - Authentication
+      operationId: refresh_token
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/refreshToken'
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: '#/definitions/refreshTokenResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/refreshTokenErrorResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/refreshTokenErrorResponseForWrongCredentials'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+  /user/send-verification-key/:
+    post:
+      tags:
+      - Account Verification
+      operationId: accountVerification
+      summary: token required
+      consumes:
+      - application/json
+      produces:
+      - application/json
+       
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/verificationKeySendResponse'
+        422:
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/verificationKeySendErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+  /user/verify-account/:
+    post:
+      tags:
+      - Account Verification
+      operationId: accountVerification2
+      summary: token required
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/accountVerification'
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: '#/definitions/verifyAccountResponse'
+        422:
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/accountVerificationErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+  /user/reset-password-request/:
+    post:
+      tags:
+      - Reset Password
+      
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        description: "Between 'email' and 'phone number' one field is required"
+        schema:
+          $ref: '#/definitions/resetPasswordRequest'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/resetPasswordRequestResponse'
+        422:
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/resetPasswordRequestErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets   
+        
+  /user/reset-password/:
+    post:
+      tags:
+      - Forget Password
+      
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/resetPassword'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/resetPasswordResponse'
+        422:
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/resetPasswordErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets 
+        
+  /user/change_password/:
+    put:
+      tags:
+      - Change Password
+      
+      produces:
+      - application/json
+      summary: token required
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/changePassword'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/changePasswordResponse'
+        422:
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/changePasswordErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets 
+        
+  /user/user_customer_profile/:
+    get:
+      tags:
+      - User Profile
+      summary: token required
+      produces:
+      - application/json
+
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/customerProfileResponse'
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets  
+        
+  /user/user_skilled_worker_profile/:
+    get:
+      tags:
+      - User Profile
+      summary: token required
+      produces:
+      - application/json
+      
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/skilledworkerProfileResponse'
+       
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+  /user/update_profile/:
+    put:
+      tags:
+      - User Profile
+      summary: token required
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        description: "Email/Phone number is required. To create 'SkilledWorker' profile 'occupation obj' and 'description' field is required and to update 'SkilledWorker' profile also 'experience' is required"
+        schema:
+          $ref: '#/definitions/updateProfile'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/updateProfileResponse'
+        422:
+          description: While updating user with skilledworker instance "occupation","description",and"experience" fields value will needs
+          schema:
+            $ref: '#/definitions/updateUserAndSWProfileErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+    patch:
+      tags:
+      - User Profile
+      summary: token required
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        description: "To create 'SkilledWorker' profile 'occupation obj' and 'description' field is required and to update 'SkilledWorker' profile also 'experience' is required"
+        schema:
+          $ref: '#/definitions/updateProfile'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/updateProfileResponse'
+        422:
+          description: While updating user with skilledworker instance "occupation","description",and"experience" fields value will needs
+          schema:
+            $ref: '#/definitions/updateUserAndSWProfileErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+  
+  /certifications/:
+    post:
+      tags:
+      - Certification
+      summary: token required
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/certification'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/certificationRequestResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/certificationErrorResponse'
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+  /certifications/{certification_id}/:
+    get:
+      tags:
+      - Certification
+      summary: token required
+      operationId: certification2
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      parameters:
+      - name: certification_id
+        in: path
+        description: ID of certification to get
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/certificationRequestResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+    put:
+      tags:
+      - Certification
+      summary: token required
+      operationId: certification
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      parameters:
+      - name: certification_id
+        in: path
+        description: ID of certification to update
+        required: true
+        type: integer
+        format: int64
+        
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/certification'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/certificationRequestResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/certificationErrorResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+    patch:
+      tags:
+      - Certification
+      summary: token required
+      operationId: certification3
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      parameters:
+      - name: certification_id
+        in: path
+        description: ID of certification to partial update
+        required: true
+        type: integer
+        format: int64
+        
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/certification'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/certificationRequestResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/certificationErrorResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+    delete:
+      tags:
+      - Certification
+      summary: token required
+      operationId: deleteCertification
+      produces:
+      - application/json
+      parameters:
+      - name: certification_id
+        in: path
+        description: ID of certification to delete
+        required: true
+        type: integer
+        format: int64
+      responses:
+        204:
+          description: No content
+        404:
+          description: Not Found
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+  /skilledworkers/:
+    get:
+      tags:
+      - SkilledWorkers
+      operationId: skilledWorkersList
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/skilledWorker'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/skilledWorkersListResponseForNonLoginUser'
+
+      security:
+      - api_key: []
+      
+  /skilledworkers/{user_id}/:
+    get:
+      tags:
+      - SkilledWorkers
+      operationId: singleSkilledWorker
+      produces:
+      - application/json
+      parameters:
+      - name: user_id
+        in: path
+        description: ID of skilledworker
+        required: true
+        type: integer
+        format: int64
+        
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/skilledWorkersProfileResponse'
+        404:
+          description: Not found
+
+      security:
+      - api_key: []
+      
+  /skilledworkers/{user_id}/portfolio/:
+    get:
+      tags:
+      - SkilledWorkers
+      operationId: skilledWorkerPortfolio
+      produces:
+      - application/json
+      parameters:
+      - name: user_id
+        in: path
+        description: ID of skilledworker
+        required: true
+        type: integer
+        format: int64
+        
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/skilledWorkersPortfolioResponse'
+        404:
+          description: Not found
+      security:
+      - api_key: []
+      
+  /skilledworkers/{user_id}/certifications/:
+    get:
+      tags:
+      - SkilledWorkers
+      operationId: skilledWorkerCertification
+      produces:
+      - application/json
+      parameters:
+      - name: user_id
+        in: path
+        description: ID of skilledworker
+        required: true
+        type: integer
+        format: int64
+        
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/skilledWorkersCertificationResponse'
+        404:
+          description: Not found
+
+      security:
+      - api_key: []
+  
+  /favorites/:
+    post:
+      tags:
+      - Favorite
+      summary: token required
+      operationId: placeOrder
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/favorite'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/favoriteResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/favoriteErrorResponse'
+
+    get:
+      tags:
+      - Favorite
+      summary: token required
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/favoriteListResponse'
+          
+  /favorites/{favorite_id}/:
+    get:
+      tags:
+      - Favorite
+      summary: token required
+      operationId: uploadFile4
+      produces:
+      - application/json
+      parameters:
+      - name: favorite_id
+        in: path
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/favoriteResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+    put:
+      tags:
+      - Favorite
+      summary: token required
+      operationId: uploadFile45
+      produces:
+      - application/json
+      parameters:
+      - name: favorite_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/favorite'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/favoriteResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/favoriteErrorResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+    patch:
+      tags:
+      - Favorite
+      summary: token required
+      operationId: favourite_patch
+      produces:
+      - application/json
+      parameters:
+      - name: favorite_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/favorite'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/favoriteResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/favoriteErrorResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+    delete:
+      tags:
+      - Favorite
+      summary: token required
+      operationId: uploadFile456
+      produces:
+      - application/json
+      parameters:
+      - name: favorite_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+
+      responses:
+        204:
+          description: No Content
+        404:
+          description: Not Found
+        
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+
+  /portfolios/:
+    get:
+      tags:
+      - Portfolio
+      summary: token required
+      produces:
+      - application/json
+      
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/portfolioListResponse'
+       
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+  /portfolios/{portfolio_id}/:
+    get:
+      tags:
+      - Portfolio
+      summary: token required
+      operationId: portfolio_get
+      produces:
+      - application/json
+      parameters:
+      - name: portfolio_id
+        in: path
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolioResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+    put:
+      tags:
+      - Portfolio
+      summary: token required
+      operationId: portfolio_put
+      produces:
+      - application/json
+      parameters:
+      - name: portfolio_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/portfolio'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolioResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/portfolioUpdateErrorResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+    patch:
+      tags:
+      - Portfolio
+      summary: token required
+      operationId: portfolio_patch
+      produces:
+      - application/json
+      parameters:
+      - name: portfolio_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/portfolio'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/portfolioResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/portfolioUpdateErrorResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+
+  /portfolios/portfolio-image/:
+    post:
+      tags:
+      - Portfolio Image
+      summary: token required
+      operationId: portfolio_image
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/portfolioImage'
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/portfolioImageResponse'
+        400:
+          description: While trying to add more then "MAX_PORTFOLIO_IMAGE_NUMBER" then the error dict key value will be (*__all__). *public objects of that module
+          schema:
+            $ref: '#/definitions/portfolioImageErrorResponse'
+
+    get:
+      tags:
+      - Portfolio Image
+      summary: token required
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolioImageListResponse'
+
+          
+  /portfolios/portfolio-image/{portfolio_image_id}/:
+    get:
+      tags:
+      - Portfolio Image
+      summary: token required
+      operationId: portfolio_image_get
+      produces:
+      - application/json
+      parameters:
+      - name: portfolio_image_id
+        in: path
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/portfolioImageResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+    put:
+      tags:
+      - Portfolio Image
+      summary: token required
+      operationId: portfolio_image_put
+      produces:
+      - application/json
+      parameters:
+      - name: portfolio_image_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/portfolioImage'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/portfolioImageResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/portfolioImageErrorResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+    patch:
+      tags:
+      - Portfolio Image
+      summary: token required
+      operationId: portfolio_image_patch
+      produces:
+      - application/json
+      parameters:
+      - name: portfolio_image_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/portfolioImage'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/portfolioImageResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/portfolioImageErrorResponse'
+        404:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+          
+    delete:
+      tags:
+      - Portfolio Image
+      summary: token required
+      operationId: portfolio_image_delete
+      produces:
+      - application/json
+      parameters:
+      - name: portfolio_image_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+
+      responses:
+        204:
+          description: No content
+        404:
+          description: Not Found
+        
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+        
+  /contact-us/:
+    post:
+      tags:
+      - Contact Us
+      summary: token required
+      operationId: createUsersWithListInput
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/contactUs'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contactUsResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/contactUsErrorResponse'
+
+
+  /notifications/:
+    get:
+      tags:
+      - Notification
+      summary: token required
+      produces:
+      - application/json
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationRequestListResponse'
+       
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+  /notifications/{notification_id}/:
+    get:
+      tags:
+      - Notification
+      summary: token required
+      operationId: Notification
+      produces:
+      - application/json
+      parameters:
+      - name: notification_id
+        in: path
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationRequestResponse'
+        400:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+
+  /notifications/{notification_id}/mark_as_read/:        
+    patch:
+      tags:
+      - Notification
+      summary: token required
+      operationId: notification_patch
+      produces:
+      - application/json
+      parameters:
+      - name: notification_id
+        in: path
+        description: object id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/notification'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/notificationUpdateResponse'
+        400:
+          description: Not Found
+
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+        
+  
+  /chat/rooms/:
+    get:
+      tags:
+      - Chat Room
+      summary: Returns list of chat room with 10 messages for each chat room
+      parameters:
+      - in: query
+        name: page
+        type: number
+        required: false
+
+      produces:
+      - application/json
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/chatRoomList'
+            
+
+  /chat/rooms/block_list/:
+    get:
+      tags:
+      - Chat Room
+      summary: Request user's blocked chat room list
+
+      produces:
+      - application/json
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/chatroomblocklist'
+            
+            
+  /chat/rooms/block/{room_id}/:
+    post:
+      tags:
+      - Chat Room
+      summary: Block specific room
+      parameters:
+      - name: room_id
+        in: path
+        required: true
+        type: integer
+        format: int64
+
+      produces:
+      - application/json
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/chatroomblock'
+            
+        400:
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/chatroomblock'
+            
+  
+  /chat/rooms/unblock/{room_id}/:
+    post:
+      tags:
+      - Chat Room
+      summary: Unblock specific room
+      parameters:
+      - name: room_id
+        in: path
+        required: true
+        type: integer
+        format: int64
+
+      produces:
+      - application/json
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/chatroomblock'
+            
+        400:
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/chatroomblock'
+            
+            
+
+  /chat/k/{room_partner_username}/:
+    get:
+      tags:
+      - Chat Room
+      summary: Return user's and room partner room info with 10 messages
+
+      produces:
+      - application/json
+      parameters:
+      - name: room_partner_username
+        in: path
+        required: true
+        type: integer
+        format: int64
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/chatroompartner2'
+            
+        400:
+          description: Not found any user with this username
+          schema:
+            $ref: '#/definitions/chatroompartner'
+            
+            
+  /chat/messages/:
+    get:
+      tags:
+      - Chat Message
+      summary: Return list of chat messages for specific room
+
+      produces:
+      - application/json
+      parameters:
+      - name: room_id
+        in: query
+        required: true
+        type: integer
+        format: int64
+      - name: page
+        in: query
+        required: true
+        type: integer
+        format: int64
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/chatMessages'
+            
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/chatroompartner'
+
+
+  /chat/messages/report/{message_id}/:
+    get:
+      tags:
+      - Chat Message
+      summary: Report a message, only receiver can do
+
+      produces:
+      - application/json
+      parameters:
+      - name: message_id
+        in: path
+        required: true
+        type: integer
+        format: int64
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/chatMessagesReport'
+            
+        400:
+          description: Reason is required! / Message not found for this message id
+          schema:
+            $ref: '#/definitions/chatMessagesReport'
+
+securityDefinitions:
+  petstore_auth:
+    type: oauth2
+    authorizationUrl: http://petstore.swagger.io/oauth/dialog
+    flow: implicit
+    scopes:
+      write:pets: modify pets in your account
+      read:pets: read your pets
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+    
+definitions:
+
+  Registration:
+    type: object
+    required:
+    - username
+    - first_name
+    - last_name
+    - date_of_birth
+    - country
+    - city
+    - profile_picture
+    - age_consent
+    - password
+    - confirm_password
+    
+    properties:
+      username:
+        type: "string"
+      email:
+        type: "string"
+      phone_number:
+        type: "string"
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      date_of_birth:
+        type: "string"
+        example: "1999-12-20"
+      country:
+        type: number
+      city:
+        type: "string"
+      age_consent:
+        type: "string"
+        example: number
+      terms_and_condition:
+        type: boolean
+      password:
+        type: "string"
+      confirm_password:
+        type: "string"
+      profile_picture:
+        type: "array"
+        xml:
+          name: photoUrl
+          wrapped: true
+        items:
+          type: "string"
+    xml:
+      name: User Registration
+      
+  apiToken:
+    type: object
+    required:
+    - email
+    - password
+    
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+
+  userRegistrationResponse:
+    type: object
+    
+    properties:
+      sms_send_message:
+        type: "string"
+      email_send_message:
+        type: "string"
+      refresh:
+        type: "string"
+      access:
+        type: "string"
+
+  userRegistrationErrorResponse:
+    type: object
+
+    properties:
+      password:
+        type: "array"
+        items:
+          type: "string"
+      first_name:
+        type: "array"
+        items:
+          type: "string"
+      last_name:
+        type: "array"
+        items:
+          type: "string"
+      date_of_birth:
+        type: "array"
+        items:
+          type: "string"
+      country:
+        type: "array"
+        items:
+          type: "string"
+      city:
+        type: "array"
+        items:
+          type: "string"
+      profile_picture:
+        type: "array"
+        items:
+          type: "string"
+      age_consent:
+        type: "array"
+        items:
+          type: "string"
+      email:
+        type: "array"
+        items:
+          type: "string"
+      phone_number:
+        type: "array"
+        items:
+          type: "string"
+      confirm_password:
+        type: "array"
+        items:
+          type: "string"
+
+  loginResponse:
+    type: object
+    required:
+    - refresh
+    - access
+    - is_account_verified
+    
+    properties:
+      refresh:
+        type: "string"
+      access:
+        type: "string"
+      is_account_verified:
+        type: boolean
+
+  loginErrorResponse:
+    type: object
+
+    properties:
+      email:
+        type: "array"
+        items:
+          type: "string"
+      password:
+        type: "array"
+        items:
+          type: "string"
+
+  loginErrorResponseForWrongCredentials:
+    type: object
+
+    properties:
+      detail:
+        type: "string"
+        
+  refreshToken:
+    type: object
+    required:
+    - refresh
+
+    properties:
+      refresh:
+        type: "string"
+
+  refreshTokenResponse:
+    type: object
+    
+    properties:
+      access:
+        type: "string"
+
+  refreshTokenErrorResponse:
+    type: object
+    
+    properties:
+      refresh:
+        type: "array"
+        items:
+          type: "string"
+
+  refreshTokenErrorResponseForWrongCredentials:
+    type: object
+    
+    properties:
+        detail:
+            type: "string"
+        code:
+            type: "string"
+
+  verificationKeySendResponse:
+    type: object
+    
+    properties:
+      message:
+        type: "string"
+
+  verificationKeySendErrorResponse:
+    type: object
+    
+    properties:
+      message:
+        type: "string"
+
+  verifyAccountResponse:
+    type: object
+    
+    properties:
+      message:
+        type: "string"
+
+  accountVerificationErrorResponse:
+    type: object
+    
+    properties:
+      message:
+        type: "string"
+        
+  accountVerification:
+    type: object
+    required:
+    - verification_key
+
+    properties:
+      verification_key:
+        type: "string"
+        
+  resetPasswordRequest:
+    type: object
+
+    properties:
+      email:
+        type: "string"
+      phone_number:
+        type: "string"
+
+  resetPasswordRequestResponse:
+    type: object
+
+    properties:
+      message:
+        type: "string"
+
+  resetPasswordRequestErrorResponse:
+    type: object
+
+    properties:
+      message:
+        type: "string"
+   
+  resetPassword:
+    type: object
+    required:
+    - verification_key
+    - new_password
+    - confirm_new_password
+
+    properties:
+      verification_key:
+        type: "string"
+      new_password:
+        type: "string"
+      confirm_new_password:
+        type: "string"
+
+  resetPasswordResponse:
+    type: object
+
+    properties:
+      message:
+        type: "string"
+
+  resetPasswordErrorResponse:
+    type: object
+
+    properties:
+        verification_key:
+            type: "array"
+            items:
+              type: "string"
+        new_password:
+            type: "array"
+            items:
+              type: "string"
+        confirm_new_password:
+            type: "array"
+            items:
+              type: "string"
+  
+  changePassword:
+    type: object
+    required:
+    - old_password
+    - new_password
+    - confirm_new_password
+
+    properties:
+      old_password:
+        type: "string"
+      new_password:
+        type: "string"
+      confirm_new_password:
+        type: "string"
+
+  changePasswordResponse:
+    type: object
+    
+    properties:
+      message:
+        type: "string"
+
+  changePasswordErrorResponse:
+    type: object
+
+    properties:
+        old_password:
+            type: "array"
+            items:
+              type: "string"
+        new_password:
+            type: "array"
+            items:
+              type: "string"
+        confirm_new_password:
+            type: "array"
+            items:
+              type: "string"
+
+  customerProfileResponse:
+    type: object
+
+    properties:
+      id: 
+        type: number
+      balance_currency: 
+        type: "string"
+      balance: 
+        type: number
+      user:
+        type: object
+        properties:
+          id:
+            type: number
+          username:
+            type: "string"
+          first_name:
+            type: "string"
+          last_name:
+            type: "string"
+          date_of_birth:
+            type: "string"
+            example: "1999-12-20"
+          phone_number:
+            type: "string"
+          email:
+            type: "string"
+          country:
+            type: number
+          city:
+            type: "string"
+          profile_picture:
+            type: "string"
+          age_consent:
+            type: number
+          terms_and_condition:
+            type: boolean
+
+  skilledworkerProfileResponse:
+    type: object
+
+    properties:
+      id: 
+        type: number
+      occupation_name:
+        type: "string"
+      description:
+        type: "string"
+      experience:
+        type: number
+      balance_currency: 
+        type: "string"
+      balance: 
+        type: number
+      user:
+        type: object
+        properties:
+          id:
+            type: number
+          username:
+            type: "string"
+          first_name:
+            type: "string"
+          last_name:
+            type: "string"
+          date_of_birth:
+            type: "string"
+            example: "1999-12-20"
+          phone_number:
+            type: "string"
+          email:
+            type: "string"
+          country:
+            type: number
+          city:
+            type: "string"
+          profile_picture:
+            type: "string"
+          age_consent:
+            type: number
+          terms_and_condition:
+            type: boolean
+        
+  updateProfile:
+    type: object
+    required:
+    - first_name
+    - last_name
+    - date_of_birth
+    - country
+    - city
+    - profile_picture
+    - age_consent
+    - occupation
+    - description
+    - experience
+    
+    properties:
+      username:
+        type: "string"
+      email:
+        type: "string"
+      phone_number:
+        type: "string"
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      date_of_birth:
+        type: "string"
+        example: "1999-12-20"
+      profile_picture:
+        type: array
+        xml:
+          name: photoUrl
+          wrapped: true
+        items:
+          type: "string"
+      country:
+        type: number
+      city:
+        type: "string"
+      age_consent:
+        type: "string"
+        example: number
+      terms_and_condition:
+        type: boolean
+      experience:
+        type: number
+      occupation:
+        type: number
+      description:
+        type: "string"
+      email_subscription:
+        type: boolean
+      
+    xml:
+      name: User Registration
+
+  updateProfileResponse:
+    type: object
+    required:
+    - is_account_verified
+    - message
+    
+    properties:
+      is_account_verified:
+        type: boolean
+      message:
+        type: "string"
+
+  updateUserAndSWProfileErrorResponse:
+    type: object
+
+    properties:
+        first_name:
+            type: "array"
+            items:
+              type: "string"
+        last_name:
+            type: "array"
+            items:
+              type: "string"
+        date_of_birth:
+            type: "array"
+            items:
+              type: "string"
+        country:
+            type: "array"
+            items:
+              type: "string"
+        city:
+            type: "array"
+            items:
+              type: "string"
+        profile_picture:
+            type: "array"
+            items:
+              type: "string"
+        age_consent:
+            type: "array"
+            items:
+              type: "string"
+        email:
+            type: "array"
+            items:
+              type: "string"
+        phone_number:
+            type: "array"
+            items:
+              type: "string"
+        occupation:
+            type: "array"
+            items:
+              type: "string"
+        description:
+            type: "array"
+            items:
+              type: "string"
+        experience:
+            type: "array"
+            items:
+              type: "string"
+
+  certification:
+    type: object
+    required:
+    - certification_name
+    - date_earned
+    - description
+    
+    properties:
+      certification_name:
+        type: "string"
+      date_earned:
+        type: "string"
+        example: "1999-12-20"
+      certification_issued:
+        type: "string"
+      description:
+        type: "string"
+      
+    xml:
+      name: User Registration
+
+  certificationRequestResponse:
+    type: object
+    
+    properties:
+      id:
+        type: number
+      certification_name:
+        type: "string"
+      date_earned:
+        type: "string"
+        example: "1999-12-20"
+      certification_issued:
+        type: "string"
+      description:
+        type: "string"
+      
+    xml:
+      name: User Registration
+
+  certificationErrorResponse:
+    type: object
+    
+    properties:
+      certification_name:
+        type: "array"
+        items:
+          type: "string"
+      description:
+        type: "array"
+        items:
+          type: "string"
+      date_earned:
+        type: "array"
+        items:
+          type: "string"
+
+  skilledWorker:
+    type: object
+
+    properties:
+      country:
+        type: number
+      city__icontains:
+        type: "string"
+      occupation:
+        type: "string"
+      
+    xml:
+      name: User Registration
+
+  skilledWorkersListResponseForNonLoginUser:
+    type: array
+
+    items:
+      type: object
+      properties:
+        id:
+          type: "number"
+        first_name:
+          type: "string"
+        last_name:
+          type: "string"
+        occupation_name:
+          type: "string"
+        date_of_birth:
+          type: "string"
+          example: "1999-12-20"
+        user_email:
+          type: "string"
+        user_phone_number:
+          type: "string"
+        country_name:
+          type: "number"
+        city:
+          type: "string"
+        profile_picture:
+          type: "string"
+        age_consent:
+          type: "number"
+
+  skilledWorkersProfileResponse:
+    type: object
+
+    properties:
+      id:
+        type: "number"
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      occupation_name:
+        type: "string"
+      date_of_birth:
+        type: "string"
+        example: "1999-12-20"
+      user_email:
+        type: "string"
+      user_phone_number:
+        type: "string"
+      country_name:
+        type: "number"
+      city:
+        type: "string"
+      profile_picture:
+        type: "string"
+      age_consent:
+        type: "number"
+
+
+  skilledWorkersPortfolioResponse:
+    type: object
+
+    properties:
+      portfolio:
+        type: object
+        properties:
+          id:
+            type: number
+          education:
+            type: "string"
+          certification:
+            type: "string"
+          description:
+            type: "string"
+
+      portfolio_images:
+        type: array
+
+        items:
+          type: object
+          properties:
+            id:
+              type: number
+            picture:
+              type: "string"
+
+  skilledWorkersCertificationResponse:
+    type: array
+
+    items:
+      type: object
+      properties:
+        id:
+          type: number
+        certification_name:
+          type: "string"
+        description:
+          type: "string"
+        date_earned:
+          type: "string"
+          example: "1999-12-20"
+        certification_issued:
+          type: "string"
+      
+  favorite:
+    type: "object"
+
+    required:
+    - skilled_worker
+
+    properties:
+      skilled_worker:
+        type: "number"
+
+  favoriteListResponse:
+    type: array
+
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+        skilled_worker:
+          type: "number"
+
+  favoriteResponse:
+    type: "object"
+
+    properties:
+      id:
+        type: "number"
+      skilled_worker:
+        type: "number"
+
+  favoriteErrorResponse:
+    type: "object"
+
+    properties:
+      skilled_worker:
+        type: "array"
+        items:
+          type: "string"
+
+  portfolio:
+    type: "object"
+    
+    required:
+    - education
+    - description
+
+    properties:
+      education:
+        type: "string"
+      description:
+        type: "string"
+      certification:
+        type: number
+
+  portfolioListResponse:
+    type: array
+
+    items:
+      type: "object"
+      properties:
+        id:
+          type: number
+        education:
+          type: "string"
+        certification:
+          type: number
+        description:
+          type: "string"
+
+  portfolioResponse:
+    type: object
+
+    properties:
+      id:
+        type: number
+      education:
+        type: "string"
+      certification:
+        type: number
+      description:
+        type: "string"
+
+  portfolioUpdateErrorResponse:
+    type: object
+    
+    properties:
+      education:
+        type: "array"
+        items:
+          type: "string"
+      description:
+        type: "array"
+        items:
+          type: "string"
+
+
+  portfolioImage:
+    type: object
+    required:
+      - picture
+
+    properties:
+      picture:
+        type: array
+        xml:
+          name: photoUrl
+          wrapped: true
+        items:
+          type: "string"
+
+  portfolioImageListResponse:
+    type: array
+
+    items:
+      type: object
+      properties:
+        id:
+          type: number
+        picture:
+          type: "string"
+
+  portfolioImageResponse:
+    type: object
+
+    properties:
+      id:
+        type: number
+      picture:
+        type: "string"
+
+  portfolioImageErrorResponse:
+    type: object
+
+    properties:
+      picture:
+        type: "array"
+        items:
+          type: "string"
+      
+  contactUs:
+    type: object
+    
+    required:
+    - title
+    - message
+
+    properties:
+      title:
+        type: "string"
+      message:
+        type: "string"
+      attachment:
+        type: "string"
+
+  contactUsResponse:
+    type: object
+
+    properties:
+      id:
+        type: number
+      title:
+        type: "string"
+      message:
+        type: number
+      attachment:
+        type: "string"
+
+  contactUsErrorResponse:
+    type: object
+
+    properties:
+      title:
+        type: "array"
+        items:
+          type: "string"
+      message:
+        type: "array"
+        items:
+          type: "string"
+      __all__:
+        type: "array"
+        items:
+          type: "string"
+
+
+  notificationRequestListResponse:
+    type: array
+
+    items:
+        type: object
+        properties:
+          id:
+            type: number
+          notification_for_display:
+            type: "string"
+          body:
+            type: number
+          is_read:
+            type: boolean
+
+
+  notificationRequestResponse:
+    type: object
+
+    properties:
+      id:
+        type: number
+      notification_for_display:
+        type: "string"
+      body:
+        type: number
+      is_read:
+        type: boolean
+
+
+  notification:
+    type: object
+    required:
+      - is_read
+
+    properties:
+      is_read:
+        type: boolean
+
+  notificationUpdateResponse:
+    type: object
+
+    properties:
+      message:
+        type: "string"
+  
+  
+  chatRoomList:
+    type: object
+
+    properties:
+      pagination:
+        type: object
+        properties:
+          total_vlaue:
+            type: number
+          this_page_start_index_no:
+            type: number
+          this_page_end_index_no:
+            type: number
+          num_of_pages:
+            type: number
+          current_page:
+            type: number
+          next_page_number:
+            type: number
+          page_range:
+            type: array
+            items:
+              type: number
+          next_page:
+            type: number
+            
+      results:
+        type: array
+        items:
+          type: object
+          
+          properties:
+            id:
+              type: number
+            chat_room_partner:
+              type: object
+              
+              properties:
+                id: 
+                  type: number
+                username:
+                  type: string
+                profile_pic:
+                  type: string
+            blocked_by_partner: 
+              type: boolean
+            blocked_by_me:
+              type: boolean
+            messages:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  sender:
+                    type: object
+                    properties:
+                      id: 
+                        type: number
+                      username: 
+                        type: string
+                      profile_pic:
+                        type: string
+                  message_type:
+                    type: string
+                  message_text:
+                    type: string
+                  attachment_links:
+                    type: array
+                    items:
+                      type: string
+                  voice: 
+                    type: string
+                  is_deleted: 
+                    type: boolean
+
+
+  chatroomblock:
+    type: object
+
+    properties:
+     message:
+      type: string
+      
+  
+  chatroomblocklist:
+    type: array
+
+    items:
+      type: object
+      
+      properties:
+        id:
+          type: number
+        chat_room_partner:
+          type: object
+          
+          properties:
+            id: 
+              type: number
+            username: 
+              type: string
+            profile_pic:
+              type: string
+            
+      
+  chatroompartner2:
+    type: object
+
+    properties:
+      id:
+        type: number
+      chat_room_partner:
+        type: object
+        
+        properties:
+          id: 
+            type: number
+          username:
+            type: string
+          profile_pic:
+            type: string
+      blocked_by_partner: 
+        type: boolean
+      blocked_by_me:
+        type: boolean
+      messages:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: number
+            sender:
+              type: object
+              properties:
+                id: 
+                  type: number
+                username: 
+                  type: string
+                profile_pic:
+                  type: string
+            message_type:
+              type: string
+            message_text:
+              type: string
+            attachment_links:
+              type: array
+              items:
+                type: string
+            voice:
+              type: string
+            is_deleted: 
+              type: boolean
+      
+      
+  chatroompartner:
+    type: object
+
+    properties:
+     message:
+      type: string
+      
+      
+  chatMessagesReport:
+    type: object
+
+    properties:
+     message:
+      type: string
+  
+      
+
+  chatMessages:
+    type: object
+
+    properties:
+      pagination:
+        type: object
+        properties:
+          total_vlaue:
+            type: number
+          this_page_start_index_no:
+            type: number
+          this_page_end_index_no:
+            type: number
+          num_of_pages:
+            type: number
+          current_page:
+            type: number
+          next_page_number:
+            type: number
+          page_range:
+            type: array
+            items:
+              type: number
+          next_page:
+            type: number
+            
+      results:
+        type: array
+        items:
+          type: object
+
+          properties:
+            id:
+              type: number
+            sender:
+              type: object
+              properties:
+                id: 
+                  type: number
+                username:
+                  type: string
+                profile_pic:
+                  type: string
+            message_type:
+              type: string
+            message_text:
+              type: string
+            attachment_links:
+              type: array
+              items:
+                type: string
+            voice:
+              type: string
+            is_deleted: 
+              type: boolean
+
+
+# Added by API Auto Mocking Plugin
+host: localhost:8000
+# basePath: /Kilimanjaro/1.0.0
+
+
+schemes:
+ - https
+ - http

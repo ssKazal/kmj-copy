@@ -1,0 +1,311 @@
+asyncapi: '2.2.0'
+info:
+  title: GigUP Application
+  version: '1.0'
+
+servers:
+  development:
+    url: ws://localhost:8000/chat/
+    protocol: WebSockets
+    description: This is GigUP development broker.
+
+  production:
+    url: ws://kmj.com/chat/
+    protocol: WebSockets
+    description: This is GigUP production broker.
+
+channels:
+  Join-Room:
+    publish:
+      message:
+        $ref: '#/components/messages/join-room'
+      description: 'Joins the chat room'
+
+  Send-Message:
+    publish:
+      description: "Sends message to chat room.When sends `voice_file` don't accept `attachment_links` and `text_message` but `attachment_links` and `text_message` can send separately or together"
+      message:
+        $ref: '#/components/messages/send-message'
+
+  Send-Message-Response:
+    subscribe:
+      description: "The response of sends message"
+      message:
+        $ref: '#/components/messages/Send-Message-Response'
+
+  Edit-Message:
+    publish:
+      description: "Edit chat room message.Only can edit `text_message`"
+      message:
+        $ref: '#/components/messages/edit-message'
+  
+  Edit-Message-Response:
+    subscribe:
+      description: "Edit chat room message.Only can edit `text_message`"
+      message:
+        $ref: '#/components/messages/edit-message-response'
+
+  Delete-Message:
+    publish:
+      description: "Deletion response"
+      message:
+        $ref: '#/components/messages/delete-message'
+
+  Delete-Message-Response:
+    subscribe:
+      description: "Delete a message"
+      message:
+        $ref: '#/components/messages/delete-message-response'
+
+  Authentication-Required:
+    subscribe:
+      message:
+        $ref: '#/components/messages/authentication-required'
+      description: 'Authentication is required for every step'
+
+  Invalid-Room-ID:
+    subscribe:
+      message:
+        $ref: '#/components/messages/invalid-room-id'
+      description: "When provide a room id that doesn't exists or that user not involve to this room"
+
+  Invalid-Room-Partner-ID:
+    subscribe:
+      message:
+        $ref: '#/components/messages/invalid-room-parnter-id'
+      description: "When provide a room partner id that doesn't exists"
+
+  Two-skilled-worker-or-two-customer-can-not-chat-together:
+    subscribe:
+      message:
+        $ref: '#/components/messages/Two-skilled-worker-or-two-customer-can-not-chat-together'
+      description: "When a skilled worker is only have skilled worker profile and try to chat with another skilled worker same as customer can not chat together"
+
+  Block-Chat-Room:
+    subscribe:
+      message:
+        $ref: '#/components/messages/blocked-chat-room'
+      description: "When try to send, edit or delete message to a blocked chat room"
+
+  Invalid-Message-Id:
+    subscribe:
+      message:
+        $ref: '#/components/messages/invalid-message-id'
+      description: "When provide invalid message id during to edit or delete message"
+
+
+components:
+  messages:
+    join-room:
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            description: "join"
+          room_id:
+            type: number
+            description: ID of Chat Room
+
+    send-message:
+      payload:
+        type: object
+        properties:
+          command: 
+            type: string
+            description: "Send message instruction"
+            example: "send_message"
+          room_id: 
+            type: number
+            description: 'ID of Chat Room'
+          text_message: 
+            type: string
+            description: 'Text message'
+          attachment_links: 
+            type: array
+            description: 'List of file as blob'
+          voice_file:
+            type: string
+            description: "Voice file as blob"
+
+    Send-Message-Response:
+      payload:
+        type: object
+        properties:
+          response_type:
+            type: string
+            description: "new_message"
+          id:
+            type: number
+            description: "ID of the message"
+          sender:
+            type: object
+            properties:
+                id: 
+                  type: number
+                  description: "ID of the user"
+                username:
+                  type: string
+                  description: "Name of the user"
+                profile_pic:
+                  type: string
+                  description: "host/path"
+          send_by:
+            type: string
+            description: "Who send the message like `me` or `other`"
+          text_message: 
+            type: string
+            description: 'Text message'
+          message_type:
+            type: string
+            description: "Types of message like `text`, `text_and_attachment`, `attachment`, `voice`"
+          attachment_links: 
+            type: array
+            description: 'List of file as string path'
+          voice:
+            type: string
+            description: "Voice file path as string"
+          created_at:
+            type: object
+            properties:
+              date: 
+                type: string
+                description: "Date of the message creation"
+              time:
+                type: string
+                description: "Time of the message creation"
+
+    edit-message:
+      payload:
+        type: object
+        properties:
+          command: 
+            type: string
+            description: "edit_message"
+          room_id: 
+            type: number
+            description: 'ID of Chat Room'
+          text_message: 
+            type: string
+            description: 'Text message'
+          message_id:
+            type: number
+            description: "Message object id which one want to edit."
+
+    edit-message-response:
+      payload:
+        type: object
+        properties:
+          response_type:
+            type: string
+            description: "edited_message"
+          id:
+            type: number
+            description: "ID of the message"
+          text_message: 
+            type: string
+            description: 'Text message'
+          message_type:
+            type: string
+            description: "Types of message like `text`, `text_and_attachment`, `attachment`, `voice`"
+          attachment_links: 
+            type: array
+            description: 'List of file as string path'
+          voice:
+            type: string
+            description: "Voice file path as string"
+
+    delete-message:
+      payload:
+        type: object
+        properties:
+          command: 
+            type: string
+            description: "delete_message"
+          room_id: 
+            type: number
+            description: 'ID of the Chat Room'
+          message_id:
+            type: number
+            description: "ID of the Message which one want to delete."
+
+    delete-message-response:
+      payload:
+        type: object
+        properties:
+          response_type: 
+            type: string
+            description: "deleted_message"
+          is_deleted: 
+            type: boolean
+            description: 'True or False'
+          message_id:
+            type: number
+            description: "Message id which one is deleted."
+    
+    authentication-required:
+      payload:
+        type: object
+        properties:
+          response_type:
+            type: string
+            description: "The type of response like `Error`"
+          message:
+            type: string
+            description: "Authentication is required."
+
+    invalid-room-id:
+      payload:
+        type: object
+        properties:
+          response_type:
+            type: string
+            description: "The type of response like `Error`"
+          message:
+            type: string
+            description: "Invalid Room ID!"
+
+    invalid-room-parnter-id:
+      payload:
+        type: object
+        properties:
+          response_type:
+            type: string
+            description: "The type of response like `Error`"
+          message:
+            type: string
+            description: "Invalid Room partner ID!"
+
+    Two-skilled-worker-or-two-customer-can-not-chat-together:
+      payload:
+        type: object
+        properties:
+          response_type:
+            type: string
+            description: "The type of response like `Error`"
+          message:
+            type: string
+            description: "Two skilled worker or two customer can't chat together."
+
+    blocked-chat-room:
+      payload:
+        type: object
+        properties:
+          response_type:
+            type: string
+            description: "The type of response like `Error`"
+          message:
+            type: string
+            description: "Chat Room is already blocked."
+
+    invalid-message-id:
+      payload:
+        type: object
+        properties:
+          response_type:
+            type: string
+            description: "The type of response like `Error`"
+          message:
+            type: string
+            description: "Invalid message ID!"
+            

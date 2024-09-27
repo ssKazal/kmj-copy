@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+kilimanjaro/.env
+migrations/
+kilimanjaro/poetry.lock
+kilimanjaro/kilimanjaro/media
+kilimanjaro/kilimanjaro/static_root/
+kilimanjaro/core/logging/save_log.log
+kilimanjaro/core/logging/celery_log.log
+kilimanjaro/pgdata/
+kilimanjaro/redis_data/
+kilimanjaro/rabbitmq_data/
+htmlcov/
+kilimanjaro/.coverage

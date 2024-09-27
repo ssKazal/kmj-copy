@@ -1,0 +1,46 @@
+{% extends "admin/change_list.html" %}
+{% block object-tools-items %}
+
+    {% if 'clientapikey' in request.path %}
+        {% if perms.core.can_add_clientapikey %} 
+            <li>
+                <a href="{% url 'core:client_api' %}" class="addlink client-api-key-add-button">Generate Client API Key</a>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+
+{% endblock %}
+
+{%block footer %}
+<script>
+	if("{{ request.path }}".includes('clientapikey')){
+
+        table_div = document.querySelector(".results")
+        table_row = table_div.getElementsByTagName("tbody")
+
+        console.log(table_row)
+
+       document.querySelector(".client-api-key-add-button").addEventListener("click", function() {
+
+        fetch('http://127.0.0.1:8000/core/client-api-key/', {
+            method: 'POST',
+            headers: {
+                "authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM4ODAwNzQyLCJpYXQiOjE2Mzg3OTcxNDIsImp0aSI6ImJjMDNjZDA4NzhjODQ0MTZiYmZjMGY1OTZhZWZhOWM1IiwidXNlcl9pZCI6MX0.88jEARgwrrMhQyUN3Xys_4tOuHiQBHA1vCOp8s_w0R8"
+            }
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+            })
+            .catch(err => {
+                console.log("error======", err)
+            })
+
+        });
+    }
+</script>
+{%endblock footer %}

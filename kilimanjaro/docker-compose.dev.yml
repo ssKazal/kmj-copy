@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  web:
+    restart: always
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/kilimanjaro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+      - redis
+  db:
+    image: postgres:12-alpine
+    ports:
+      - "5444:5444"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+
+  redis:
+    image: "redis:6-alpine"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+
+  rabbitmq3:
+    image: rabbitmq:3.9-management-alpine
+    environment:
+        - RABBITMQ_DEFAULT_USER=${RMQ_USER}
+        - RABBITMQ_DEFAULT_PASS=${RMQ_PASSWORD}
+    ports:
+        # AMQP protocol port
+        - '5672:5672'
+        # HTTP management UI
+        - '15672:15672'
+    volumes:
+      - ./rabbitmq_data:/kilimanjaro/rabbitmq_data
+    hostname: rabbitmq
+
+  worker:
+    build: .
+    command: celery -A kilimanjaro worker -l info
+    volumes:
+      - ./core/logging/:/kilimanjaro/core/logging/
+    depends_on:
+      - db
+      - rabbitmq3

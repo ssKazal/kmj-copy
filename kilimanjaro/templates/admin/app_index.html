@@ -1,0 +1,65 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block bodyclass %}{{ block.super }} app-{{ app_label }}{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo;
+
+{% for app in app_list %}
+{{ app.name }}
+{% endfor %}
+
+</div>
+{% endblock %} 
+{% endif %}
+
+
+
+
+{% block content %}
+
+<!-- hide header title  -->
+{% block content_title %}{% endblock %}
+
+
+<div class="row mt-5 mx-5 container-area w-100%">
+    <h1 style="margin-top: -30px; margin-bottom: 50px;text-align: center; font-family: 'Josefin Sans Semibold 35'!important; ">{{ title }}</h1>
+    {% for app in app_list %} 
+      {% for model in app.models %}
+      <div class="col-md-6 col-sm-8 col-xl-3 col-xs-12">
+        <div class="
+            d-flex
+            p-3
+            mb-5
+            rounded
+            h-200
+            content-area
+            align-items-center
+            justify-content-center
+            text-center
+          ">
+  
+          <div>
+            
+            <a class="model-name {% if not model.admin_url %}access-denied-cls{% endif %}" href="{% if model.admin_url %}{{ model.admin_url }}{% else %}#{% endif %}">{{ model.name }}</a><br><br>
+  
+            {% if model.add_url %}
+            <p><a href="{{ model.add_url }}" class="addlink home-page-add-link">{% translate 'Add' %}</a></p>
+            {% endif %}
+            
+          </div>
+  
+        </div>
+      </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+  
+{% endblock %}
+
+
+

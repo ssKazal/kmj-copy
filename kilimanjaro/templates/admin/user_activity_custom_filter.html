@@ -1,0 +1,103 @@
+{% load i18n %}
+<h3>
+  {% blocktranslate with filter_title=title %}{{ filter_title }} {% endblocktranslate %}
+</h3>
+
+<div class="checkbox-form-container" style="padding-left: 16px">
+  <div class="checkbox-input-container" style="margin-bottom: 8px">
+    <input
+      type="checkbox"
+      id="activeCheckbox"
+      onclick="onClickHandler(this)"
+      name="yes"
+      value="yes"
+      style="height: 15px; width: 25px; cursor: pointer"
+    />
+    <label for="checkbox_yes" style="color: #b863ea">Yes</label>
+  </div>
+
+  <div class="checkbox-input-container">
+    <input
+      type="checkbox"
+      id="activeCheckbox2"
+      onclick="onClickHandler(this)"
+      name="no"
+      value="no"
+      style="height: 15px; width: 25px; cursor: pointer"
+    />
+    <label for="checkbox_yes" style="color: #b863ea">No</label>
+  </div>
+</div>
+
+<script>
+  url2 = new URL(window.location.href);
+  searchParams2 = new URLSearchParams(url2.search);
+  userTypeSearchP2 = searchParams2.get("is_active");
+  existing_params2 = userTypeSearchP2 ? userTypeSearchP2.split(",") : [];
+
+  keys2 = [];
+  for (var key of searchParams2.keys()) {
+    if (key != "is_active") {
+      keys2.push(key);
+    }
+  }
+
+  function onClickHandler(checkbox) {
+    var params;
+
+    if (checkbox.checked) {
+      params = params + checkbox.value;
+    } else {
+      params =
+        params +
+        existing_params2
+          .filter(function (item) {
+            return item != checkbox.value;
+          })
+          .join(",");
+    }
+
+    if (keys2.length > 0) {
+      url2.searchParams.delete("is_active");
+      params = url2.search + "&is_active=";
+    } else {
+      params = "?is_active=";
+    }
+
+    if (checkbox.checked) {
+      params = params + checkbox.value;
+
+      if (
+        existing_params2.length > 0 &&
+        !existing_params2.includes(checkbox.value)
+      ) {
+        params = params + "," + existing_params2.join(",");
+      }
+    } else {
+      params =
+        params +
+        existing_params2
+          .filter(function (item) {
+            return item != checkbox.value;
+          })
+          .join(",");
+    }
+
+    window.location.href =
+      window.location.origin + window.location.pathname + params;
+  }
+
+  checkbox1 = document.getElementById("activeCheckbox");
+  checkbox2 = document.getElementById("activeCheckbox2");
+
+  if (existing_params2.includes("yes")) {
+    checkbox1.checked = true;
+  } else {
+    checkbox1.checked = false;
+  }
+  if (existing_params2.includes("no")) {
+    checkbox2.checked = true;
+  } else {
+    checkbox2.checked = false;
+  }
+</script>

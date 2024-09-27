@@ -1,0 +1,96 @@
+{% extends "admin/base_site.html" %}
+{% block extrastyle %}
+	<style type="text/css">
+		#header {
+			background: #9277F7;
+			color: white;
+		}
+		#header a,
+		div.breadcrumbs a,
+		a.section,
+		.object-tools a,
+		.submit-row a.deletelink,
+		#changelist .actions .button,
+		.selector .selector-available h2 {
+			color: #fff !important;
+		}
+		div.breadcrumbs {
+			background: #9277f7cf;
+		}
+		.module h2,
+		.module caption,
+		.inline-group h2,
+		.selector-chosen h2,
+		.object-tools a,
+		.button,
+		input[type=submit],
+		input[type=button],
+		.submit-row input,
+		a.button,
+		.submit-row a.deletelink {
+			background: #9277F7 !important;
+		}
+
+		.button:active,
+		input[type=submit]:active,
+		input[type=button]:active,
+		.button:focus,
+		input[type=submit]:focus,
+		input[type=button]:focus,
+		.button:hover,
+		input[type=submit]:hover,
+		input[type=button]:hover {
+			background: #9277F7 !important;
+		}
+
+		.submit-row a.deletelink:focus,
+		.submit-row a.deletelink:hover,
+		.submit-row a.deletelink:active {
+			background: #9277F7 !important;
+		}
+		a {
+			color: #9277F7 !important;
+		}
+		a:hover {
+			color: #c1b9c5 !important;
+		}
+		ul.messagelist li {
+			background: #9277f791;
+			color: white;
+		}
+		ul.messagelist li a{
+			color: white!important;
+		}
+	</style>
+{% endblock %}
+
+{%block footer %}
+<script>
+	currencySetter = function (currency_list) {
+		var allCurrency = document.getElementById("id_balance_1") != null && document.getElementById("id_balance_1").querySelectorAll("option")
+		for (var key of Object.keys(allCurrency)) {
+			if (!currency_list.includes(allCurrency[key].value)) {
+				allCurrency[key].remove()
+			}
+		}
+	}
+
+	// skilled worker currency list 
+	skilled_worker_supported_currency = "{{ skilled_worker_supported_currency }}"
+	skilled_worker_supported_currency = skilled_worker_supported_currency.replace(/&#x27;/g, '\"')
+	skilled_worker_supported_currency = JSON.parse(skilled_worker_supported_currency);
+
+	// customer supported currency list
+	customer_supported_currency = "{{ customer_supported_currency }}"
+	customer_supported_currency = customer_supported_currency.replace(/&#x27;/g, '\"')
+	customer_supported_currency = JSON.parse(customer_supported_currency)
+
+
+	// When unpermitted user try to access any of action
+	var accessDeniedSelector = document.querySelector(".access-denied-cls");
+	accessDeniedSelector && accessDeniedSelector.addEventListener("click", function() {
+		alert("You don't have permission to perform this action!");
+	});
+	
+</script>
+{%endblock footer %}

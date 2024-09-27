@@ -1,0 +1,121 @@
+{% load i18n %}
+<h3>
+  {% blocktranslate with filter_title=title %}{{ filter_title }} {% endblocktranslate %}
+</h3>
+
+<div class="checkbox-form-container" style="padding-left: 16px">
+  <div class="checkbox-input-container" style="margin-bottom: 8px;">
+    <input
+      type="checkbox"
+      id="superUser"
+      onclick="onClickHandler2(this)"
+      name="superUser"
+      value="super"
+      style="height: 15px; width: 25px; cursor: pointer"
+    />
+    <label for="checkbox_yes" style="color: #b863ea">Super user</label>
+  </div>
+
+
+  <div class="checkbox-input-container" style="margin-bottom: 8px">
+    <input
+      type="checkbox"
+      id="staffUser"
+      onclick="onClickHandler2(this)"
+      name="staffUser"
+      value="staff"
+      style="height: 15px; width: 25px; cursor: pointer"
+    />
+    <label for="checkbox_yes" style="color: #b863ea">Staff</label>
+  </div>
+
+  <div class="checkbox-input-container" style="margin-bottom: 15px;">
+    <input
+      type="checkbox"
+      id="basicUser"
+      onclick="onClickHandler2(this)"
+      name="basicUser"
+      value="basic"
+      style="height: 15px; width: 25px; cursor: pointer"
+    />
+    <label for="checkbox_yes" style="color: #b863ea">Basic user</label>
+  </div>
+</div>
+
+<script>
+  url = new URL(window.location.href);
+  searchParams = new URLSearchParams(url.search);
+  userTypeSearchP = searchParams.get("user_type");
+  existing_params = userTypeSearchP ? userTypeSearchP.split(',') : []
+
+  keys = []
+  for(var key of searchParams.keys()) {
+    if(key != 'user_type'){
+      keys.push(key)
+    } 
+  }
+
+  function onClickHandler2(checkbox) {
+    var params;
+
+    if (checkbox.checked) {
+      params = params + checkbox.value;
+    } else {
+      params =
+        params +
+        existing_params
+          .filter(function (item) {
+            return item != checkbox.value;
+          })
+          .join(",");
+    }
+
+    if(keys.length > 0){
+      url.searchParams.delete('user_type')
+      params = url.search + "&user_type="
+    }else{
+      params = "?user_type="
+    }
+
+    if(checkbox.checked){
+      params = params + checkbox.value
+
+      if (existing_params.length > 0 && !existing_params.includes(checkbox.value)) {
+        params = params + "," + existing_params.join(',')
+      }
+
+    } else{
+      params =
+        params +
+        existing_params
+          .filter(function (item) {
+            return item != checkbox.value;
+          })
+          .join(",");
+    }
+
+    
+    window.location.href =
+      window.location.origin + window.location.pathname + params;
+  }
+
+  staffCheckbox = document.getElementById("staffUser");
+  superCheckbox = document.getElementById("superUser");
+  basicCheckbox = document.getElementById("basicUser");
+
+  if (existing_params.includes("staff")) {
+    staffCheckbox.checked = true;
+  } else {
+    staffCheckbox.checked = false;
+  }
+  if (existing_params.includes("super")) {
+    superCheckbox.checked = true;
+  } else {
+    superCheckbox.checked = false;
+  }
+  if (existing_params.includes("basic")) {
+    basicCheckbox.checked = true;
+  } else {
+    basicCheckbox.checked = false;
+  }
+</script>

@@ -1,0 +1,31 @@
+1. All the models should have a 'UUID4' field
+2. All the models should have a created_at and a modified_at field. Use the TimeStampedModel of the django utils library - https://django-model-utils.readthedocs.io/en/latest/models.html 
+3. All the model fields should be in small letters.
+4. For variables Use snake cases (“_”)
+5. Use python poetry to manage packages and dependencies  
+6. Need to maintain the Timezone rule which is “System all data will be saved in UTC but show users in the users selected the timezone”
+7. Use these tools to maintain performance. 
+	nplusone: https://github.com/jmcarp/nplusone (detects N+1 queries)
+	django-seal: https://github.com/charettes/django-seal (raises warnings on lazy fetching of remote relationships)
+	django-debug-toolbar: https://github.com/jazzband/django-debug-toolbar (A configurable set of panels that display various debug information about the current request/response.)
+
+8. Make sure logging is working properly. And for the issues raised in logging user shouldn't get any interruption.  
+9. Need to use caching(Using redis) in places where it can be used.
+10. Provide proper API documentation on api-docs file.
+11. Admin panel will have both dev and live mode.
+12. We will use 'https://swagger.io/' to make api documentation.
+13. Long tasks in a view (e.g. sending email or sms) should be done asynchronously. Means the tasks in the view next to it should keep running while it's progressing.
+14. Try to keep the avg. response time with-in 150ms.
+15. If we update or add anything in the SkilledWorker, Customer and Portfolio models, need to make sure the cache is updated as well
+16. If the API end accepts video file as request data, need to skip that video file from log. By adding url path and that field name inside "core/utils/general_data" > "sensitive_fields" list.
+17. Admin User create(bulk):
+	- We ain't handling unsopported file import issue
+	- Import file format should be MSExcel(Onedirve excel)
+	- Export file column format has changed. So, can't import that file after updating values.
+18. Use Celery for all async requests 
+19. To keep async 'emails sending' and 'twilio phone sms' use celery task 'send_email' and 'send_sms' from 'core/tasks.py'
+20. For add/remove currency option from skilled worker profile, have to add/remove currency to SKILLED_WORKER_SUPPORTED_CURRENCY ('kilimanjaro/settings.py')
+21. For add/remove currency option from customer profile, have to add/remove currency to CUSTOMER_SUPPORTED_CURRENCY ('kilimanjaro/settings.py')
+22. Using coverage.py needs to make sure codebase has 100% test coverage
+23. Writing a code may requires changes in the test case. So have to run tests related to corresponding code, frequently.
+24. After writing code, have to run 'root_dir/bin/liners.sh' file
